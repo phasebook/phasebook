@@ -139,16 +139,16 @@ For large genomes or genomic regions assembly:
     python phasebook.py -i reads.fa -t 8 -p ont -g large -x 
 ```
 
-## Possible issues during installation
+## Possible issues during installation (*Optional*)
 
-[*Optional*] If `g++` version of the system is not satisfied, one could try this to install:
+- If `g++` version of the system is not satisfied, one could try this to install:
 ```
 conda install -c conda-forge gxx_linux-64=7.3.0
 # replace the /path/to/ with your own path
 ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda-cos6-linux-gnu-g++ /path/to/miniconda3/envs/phasebook/bin/g++
 ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda-cos6-linux-gnu-gcc /path/to/miniconda3/envs/phasebook/bin/gcc
 ```
-[*Optional*] If `boost` or `zlib` library is not installed, one could try this to install:
+- If `boost` or `zlib` library is not installed, one could try this to install:
 ```
 conda install -c conda-forge boost zlib
 # set envionment variables
@@ -156,7 +156,7 @@ export LD_LIBRARY_PATH=/path/to/miniconda3/envs/phasebook/lib/:$LD_LIBRARY_PATH
 export CPATH=/path/to/miniconda3/envs/phasebook/include/:$CPATH
 ```
 
-[*Optional*] If compile error occurs something like `/path/to/miniconda3/envs/phasebook/x86_64-conda_cos6-linux-gnu/bin/ld: cannot find -lboost_timer `
+- If compile error occurs something like `/path/to/miniconda3/envs/phasebook/x86_64-conda_cos6-linux-gnu/bin/ld: cannot find -lboost_timer `
 or `cannot find -lz`, 
  which means it fails to link `boost` or `zlib` library, one could try this to solve:
 ```
