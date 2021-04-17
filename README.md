@@ -48,7 +48,7 @@ The final polished haplotype aware contigs are included in the `contigs.fa` file
 Before running Phasebook, please read through the following basic parameter settings, 
 which may be helpful to obtain better assemblies. Note that the option `-x` indicates 
 using preset parameters for assembly, which is recommended.
-
+```
 -  -i INFILE, --infile INFILE
                         input file in FASTA/FASTQ format (default: None)
 -  -o OUTDIR, --outdir OUTDIR
@@ -99,8 +99,7 @@ using preset parameters for assembly, which is recommended.
                         number of observations of each allele (default: 4)
 -  --n_final_polish N_FINAL_POLISH
                         polish times for final contigs (default: 1)
-
-
+```
 
 ## Examples
 One can test the program using the small PacBio HiFi reads file `example/reads.fa`.
