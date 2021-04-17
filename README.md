@@ -139,7 +139,7 @@ For large genomes or genomic regions assembly:
     python phasebook.py -i reads.fa -t 8 -p ont -g large -x 
 ```
 
-## Possible issues during installation (*Optional*)
+## Possible issues during installation (Optional)
 
 - If `g++` version of the system is not satisfied, one could try this to install:
 ```
