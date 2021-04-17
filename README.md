@@ -49,55 +49,55 @@ Before running Phasebook, please read through the following basic parameter sett
 which may be helpful to obtain better assemblies. Note that the option `-x` indicates 
 using preset parameters for assembly, which is recommended.
 ```
--  -i INFILE, --infile INFILE
+-i INFILE, --infile INFILE
                         input file in FASTA/FASTQ format (default: None)
--  -o OUTDIR, --outdir OUTDIR
+-o OUTDIR, --outdir OUTDIR
                         output directory (default: .)
--  -t THREADS, --threads THREADS
+-t THREADS, --threads THREADS
                         number of threads (default: 1)
--  -p PLATFORM, --platform PLATFORM
+-p PLATFORM, --platform PLATFORM
                         sequencing platform(PacBio CLR/PacBio HiFi/Oxford
                         Nanopore): [pb/hifi/ont] (default: pb)
--  -x PRESET, --preset PRESET
+-x PRESET, --preset PRESET
                         use preset parameters
--  -g GENOMESIZE, --genomesize GENOMESIZE
+-g GENOMESIZE, --genomesize GENOMESIZE
                         genome size: small/large (default: small)
--  --overlaps OVERLAPS   input file in PAF format (default: None)
--  --min_cov MIN_COV     min coverage for trimming consensus (default: 4.0)
--  --min_identity MIN_IDENTITY
+--overlaps OVERLAPS   input file in PAF format (default: None)
+--min_cov MIN_COV     min coverage for trimming consensus (default: 4.0)
+--min_identity MIN_IDENTITY
                         min identity for filtering overlaps (default: 0.75)
--  --min_read_len MIN_READ_LEN
+--min_read_len MIN_READ_LEN
                         min read length for processing (default: 1000)
--  --min_sread_len MIN_SREAD_LEN
+--min_sread_len MIN_SREAD_LEN
                         min seed read length (default: 1000)
--  --min_ovlp_len MIN_OVLP_LEN
+--min_ovlp_len MIN_OVLP_LEN
                         min overlap length for super reads construction
                         (default: 1000)
--  --n_correct N_CORRECT
+--n_correct N_CORRECT
                         times for self error correction of raw reads (default:
                         0)
--  --n_polish N_POLISH   times for super reads polishing (default: 2)
--  --sp_min_identity SP_MIN_IDENTITY
+--n_polish N_POLISH   times for super reads polishing (default: 2)
+--sp_min_identity SP_MIN_IDENTITY
                         super reads min identity for filtering overlaps
                         (default: 0.98)
--  --min_cluster_size MIN_CLUSTER_SIZE
+--min_cluster_size MIN_CLUSTER_SIZE
                         min size of read clusters (default: 4)
--  --trim_ends TRIM_ENDS
+--trim_ends TRIM_ENDS
                         trim the erroneous bases in both ends, should be
                         either True or False (default: False)
--  --ctg_asm CTG_ASM    method to assemble super reads: [rb/naive], rb is time consuming, 
+--ctg_asm CTG_ASM    method to assemble super reads: [rb/naive], rb is time consuming, 
                         which is only recommended for small genomes (default: rb)
--  --correct_mode CORRECT_MODE
+--correct_mode CORRECT_MODE
                         method to correct raw reads: [msa/hybrid], msa is much
                         faster than hybrid, which is recommended for large
                         genomes (default: msa)
--  --max_het_snps MAX_HET_SNPS
+--max_het_snps MAX_HET_SNPS
                         maximum number of heterozygous SNPs to determine the
                         contig overlap is from the identical haplotype or not
                         (default: 0)
--  --min_allele_cov MIN_ALLELE_COV
+--min_allele_cov MIN_ALLELE_COV
                         number of observations of each allele (default: 4)
--  --n_final_polish N_FINAL_POLISH
+--n_final_polish N_FINAL_POLISH
                         polish times for final contigs (default: 1)
 ```
 
