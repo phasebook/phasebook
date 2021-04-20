@@ -1,6 +1,6 @@
-# Phasebook
+# phasebook
 ## Description
-Phasebook is a novel approach for reconstructing the haplotypes of diploid genomes from 
+phasebook is a novel approach for reconstructing the haplotypes of diploid genomes from 
 long reads *de novo*, that is without the need for a reference genome. 
 This approach firstly groups the raw reads into small clusters of contiguous reads based on 
 read overlaps. It then separates the reads within each cluster into two haplotypes in order to 
@@ -10,8 +10,8 @@ aware super read overlap graph to extend super reads into haplotype aware contig
 
 
 ## Installation and dependencies
-Please note that Phasebook is built for linux-based systems and python3 only.
-Phasebook relies on the following dependencies:
+Please note that phasebook is built for linux-based systems and python3 only.
+phasebook relies on the following dependencies:
 - [whatshap](https://whatshap.readthedocs.io/en/latest/)
 - [minimap2](https://github.com/lh3/minimap2)
 - [longshot](https://github.com/pjedge/longshot)
@@ -25,7 +25,7 @@ Phasebook relies on the following dependencies:
 and [NECAT](https://github.com/xiaochuanle/NECAT)*
 - g++ >=5.5.0 and with boost libraries
 
-To install Phasebook, firstly, it is recommended to intall the dependencies through [Conda](https://docs.conda.io/en/latest/):
+To install phasebook, firstly, it is recommended to intall the dependencies through [Conda](https://docs.conda.io/en/latest/):
 ```
 conda create -n phasebook
 conda activate phasebook
@@ -34,8 +34,8 @@ conda install -c bioconda whatshap=0.18 minimap2 longshot samtools bcftools raco
 
 Subsequently, pull down the code to the directory where you want to install, and compile the code:
 ```
-git clone https://github.com/Phasebook/Phasebook.git
-cd Phasebook
+git clone https://github.com/phasebook/phasebook.git
+cd phasebook
 sh install.sh
 ```
 
@@ -45,7 +45,7 @@ The input read file is only required and the format should be FASTA or FASTQ. Ot
 Please run `python phasebook.py -h` to get details of optional parameters setting. 
 The final polished haplotype aware contigs are included in the `contigs.fa` file under output directory.
 
-Before running Phasebook, please read through the following basic parameter settings, 
+Before running phasebook, please read through the following basic parameter settings, 
 which may be helpful to obtain better assemblies. Note that the option `-x` indicates 
 using preset parameters for assembly, which is recommended.
 ```
