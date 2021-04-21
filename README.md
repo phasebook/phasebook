@@ -47,7 +47,7 @@ The final polished haplotype aware contigs are included in the `contigs.fa` file
 
 Before running phasebook, please read through the following basic parameter settings, 
 which may be helpful to obtain better assemblies. Note that the option `-x` indicates 
-using preset parameters for assembly, which is recommended.
+using preset parameters for assembly.
 ```
 -i INFILE, --infile INFILE
                         input file in FASTA/FASTQ format (default: None)
