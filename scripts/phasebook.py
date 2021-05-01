@@ -369,7 +369,7 @@ def main():
 
     log.logger.info('All has been finished successfully.\n')
     log.logger.info('The final output haplotype aware contigs are here: {}/contigs.fa\n'.format(args.outdir))
-    log.logger.info('Thank you for using Phasebook!\n')
+    log.logger.info('Thank you for using phasebook!\n')
 
 
 if __name__ == '__main__':
