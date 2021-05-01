@@ -257,7 +257,7 @@ def main():
 
     log.logger.info('splitting input fastx file into {} subfiles...'.format(args.nsplit))
     os.system("rm -rf {}/1.split_fastx".format(args.outdir))
-    os.system("mkdir {}/1.split_fastx".format(args.outdir))
+    os.system("mkdir -p {}/1.split_fastx".format(args.outdir))
     # fastx_files = []
     # fastx_files.append(args.infile)
     fastx_files = preprocess_fastx(args.infile, args.outdir, args.nsplit, qc=args.qc,
@@ -273,7 +273,7 @@ def main():
         # compute overlaps using minimap2(no base level alignment) and filter overlaps using fpa
         log.logger.info('computing all-vs-all read overlaps...')
         os.system("rm -rf {}/2.overlap".format(args.outdir))
-        os.system("mkdir {}/2.overlap".format(args.outdir))
+        os.system("mkdir -p {}/2.overlap".format(args.outdir))
         ovlp_files = compute_ovlps(fastx_files, args.outdir, args.threads, args.platform, args.genomesize,
                                    args.min_ovlp_len,
                                    args.min_identity, args.max_oh, args.oh_ratio)
@@ -328,7 +328,7 @@ def main():
         log.logger.info('Using {} method for super reads assembly...'.format(args.ctg_asm))
         asm_supereads_dir = "{}/4.asm_supereads".format(args.outdir)
         os.system("rm -rf {}".format(asm_supereads_dir))
-        os.system("mkdir {}".format(asm_supereads_dir))
+        os.system("mkdir -p {}".format(asm_supereads_dir))
         ctg_file, utg2supereads_old = assemble_supereads(all_supereads_fa, asm_supereads_dir, args.threads,
                                                          args.min_read_len, args.sp_min_ovlplen,
                                                          args.sp_min_identity, args.sp_oh, args.sp_ohratio,
@@ -340,7 +340,7 @@ def main():
             log.logger.info('Polishing final contigs for {} times...'.format(args.n_final_polish))
             polish_dir = "{}/5.polish".format(args.outdir)
             os.system("rm -rf {}".format(polish_dir))
-            os.system("mkdir {}".format(polish_dir))
+            os.system("mkdir -p {}".format(polish_dir))
 
             # rename
             utg2supereads = {}
