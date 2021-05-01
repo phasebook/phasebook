@@ -3,6 +3,7 @@ from multiprocessing import Pool
 import sys
 import os
 import copy
+import gzip
 
 from toolkits import fq_or_fa
 from mylog import Logger
@@ -60,19 +61,22 @@ def preprocess_fastx(infile, outdir, nsplit, qc, rename):
     pool = Pool(nsplit)
     to_end = False
     iter_num = 1
-    with open(infile) as fr:
-        while True:
-            params = []
-            for i in range(nsplit):
-                next_n_lines = list(islice(fr, n_lines))  # much faster than fr.readlines( n_lines)
-                if not next_n_lines:
-                    to_end = True
-                    break
-                param = (next_n_lines, str(i + 1), iter_num, r, fastx_files[i], qc, rename, mode)
-                params.append(param)
-            pool.map(process_read, params, chunksize=1)  # jobs are sorted
-            iter_num += 1
-            if to_end: break
+    if not infile.endswith('.gz'):
+        fr = open(infile,'r')
+    else:
+        fr = gzip.open(infile,'rb')
+    while True:
+        params = []
+        for i in range(nsplit):
+            next_n_lines = list(islice(fr, n_lines))  # much faster than fr.readlines( n_lines)
+            if not next_n_lines:
+                to_end = True
+                break
+            param = (next_n_lines, str(i + 1), iter_num, r, fastx_files[i], qc, rename, mode)
+            params.append(param)
+        pool.map(process_read, params, chunksize=1)  # jobs are sorted
+        iter_num += 1
+        if to_end: break
 
     pool.close()
     pool.join()
@@ -84,7 +88,7 @@ def compute_ovlp(fastx_i, fastx_j, outdir, threads, platform,genomesize, min_ovl
                  max_oh, oh_ratio):
     '''compute overlaps from a pair of fasta/fastq file
     & filter overlaps using fpa(cannot set overhang cutoff and cannot remove duplicated overlaps)
-    OR my own script?
+    OR my own script
     '''
     prefix_i = fastx_i.split('/')[-1].replace('.fa', '')
     prefix_j = fastx_j.split('/')[-1].replace('.fa', '')
