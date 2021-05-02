@@ -1,9 +1,11 @@
 import networkx as nx
 import sys
+import os 
 
 def fq_or_fa(file):
-    with open(file) as fr:
-        s = fr.readline()[0]
+    # with open(file) as fr:
+        # s = fr.readline()[0]
+    s = os.popen("zcat {}|head -1".format(file)).read()[0]
     mode = ''
     if s == '>':
         mode = 'fasta'
