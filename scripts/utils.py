@@ -64,7 +64,7 @@ def preprocess_fastx(infile, outdir, nsplit, qc, rename):
     if not infile.endswith('.gz'):
         fr = open(infile,'r')
     else:
-        fr = gzip.open(infile,'rb')
+        fr = gzip.open(infile,'rt')
     while True:
         params = []
         for i in range(nsplit):
