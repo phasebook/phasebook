@@ -27,7 +27,7 @@ python $srcpath/phasebook.py -i $input  --nsplit 1 -t $threads --min_cov 10 --mi
 
 # real data, HG00733_chr6, hifi
 input=/root/capsule/data/real/hifi_HG00733/chr6.reads.fa.gz
-python $srcpath/phasebook.py -i $input   --nsplit 1 -t $threads --min_cov 3 --min_identity 0.9 --min_read_len 1000 --min_ovlp_len 900 --n_correct 0 --n_polish 1 --platform hifi --min_cluster_size 3 --level 3 --rm_trans 1 --sort_by_len False --trim_ends True --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.98 --sp_oh 10 --ctg_asm rb --max_het_snps 0 --n_final_polish 1 --polish_tool racon --rm_tmp True --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000 
+python $srcpath/phasebook.py -i $input  --nsplit 1 -t $threads -g large --min_cov 3 --min_identity 0.9 --min_read_len 1000 --min_ovlp_len 900 --n_correct 0 --n_polish 1 --platform hifi --min_cluster_size 3 --level 3 --rm_trans 1 --sort_by_len False --trim_ends True --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.98 --sp_oh 10 --ctg_asm rb --max_het_snps 0 --n_final_polish 1 --polish_tool racon --rm_tmp True --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000 
 
 # real data,  HG00733_chr6, clr
 input=/root/capsule/data/real/clr_HG00733/chr6.reads.fa.gz

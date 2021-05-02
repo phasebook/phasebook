@@ -97,7 +97,7 @@ def main():
     parser.add_argument('--ctg_asm', dest='ctg_asm', type=str, required=False, default='rb',
                         help="method to assemble super reads: [rb/naive/iter], rb is recommended")
 
-    parser.add_argument('--correct_mode', dest='correct_mode', type=str, required=False, default='msa',
+    parser.add_argument('--correct_mode', dest='correct_mode', type=str, required=False, default='hybrid',
                         help="method to correct raw reads: [msa/hybrid], msa is much faster than hybrid, which is recommended for large genomes")
 
     parser.add_argument('--max_het_snps', dest='max_het_snps', type=int, required=False, default=0,
@@ -142,7 +142,7 @@ def main():
     default_trim_ends = False
     default_sp_min_ovlplen = 1000
     default_sp_min_identity = 0.98
-    default_correct_mode = 'msa'
+    default_correct_mode = 'hybrid'
     default_ctg_asm = 'rb'
     default_n_final_polish = 1
     default_max_het_snps = 0

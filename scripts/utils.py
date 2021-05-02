@@ -100,7 +100,7 @@ def compute_ovlp(fastx_i, fastx_j, outdir, threads, platform,genomesize, min_ovl
                       .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
                       )
         elif platform == 'hifi': # for HiFi reads, it seems no need to use -c, which largely speeds up.
-            os.system("minimap2 -cx ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
+            os.system("minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
                         {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}"
                       .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
                       )
