@@ -12,6 +12,7 @@ python $srcpath/phasebook.py -i $input -o out --nsplit 1 -t $threads --min_cov 4
 
 
 ## Note: the following code may cannot be run on 'Code Ocean' because of limited computational resources and storges ##
+## For all datasets, we provide the final output haplotype-specific contigs and evaluations in 'result/' ##
 
 if false
 then 
@@ -19,11 +20,11 @@ then
 input=/root/capsule/data/simulated/pbsim/clr/mhc/25x/PGF_COX.pbsim.clr.25x.fasta.gz
 ## For other different sequencing coverage data (15x,25x,35x,45x)
 #input=/root/capsule/data/simulated/pbsim/clr/mhc/*/PGF_COX.pbsim.clr.*.fasta.gz
-python $srcpath/phasebook.py -i $input  -o out --nsplit 1 -t $threads --min_cov 3 --min_identity 0.75 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 900 --n_correct 2 --n_polish 2 --platform pb --min_cluster_size 8 --level 1 --rm_trans 1 --sort_by_len True --trim_ends True --rename False --sp_min_ovlplen 2000 --sp_min_identity 0.85 --sp_oh 500 --ctg_asm rb --max_het_snps 0 --min_allele_cov 6 --n_final_polish 2 --polish_tool racon --rm_tmp False --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
+python $srcpath/phasebook.py -i $input --nsplit 1 -o out -t $threads --min_cov 10 --min_identity 0.75 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 900 --n_correct 2 --n_polish 2 --platform pb --min_cluster_size 10 --level 1 --rm_trans 1 --sort_by_len True --trim_ends True --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.85 --sp_oh 500 --ctg_asm rb --max_het_snps 0 --min_allele_cov 6 --n_final_polish 2 --polish_tool racon --rm_tmp False --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
 
 # simulated data, MHC ONT
 input=/root/capsule/data/simulated/nanosim/mhc/25x/PGF_COX.reads.fa.gz
-python $srcpath/phasebook.py -i $input  -o out --nsplit 1 -t $threads --min_cov 10 --min_identity 0.75 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 900 --n_correct 2 --n_polish 2 --platform ont --min_cluster_size 10 --level 1 --rm_trans 1 --sort_by_len True --trim_ends True --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.85 --sp_oh 400 --ctg_asm rb --max_het_snps 1 --min_allele_cov 6 --n_final_polish 2 --polish_tool racon --rm_tmp False --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
+python $srcpath/phasebook.py -i $input -o out --nsplit 1 -t $threads --min_cov 10 --min_identity 0.75 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 900 --n_correct 2 --n_polish 2 --platform ont --min_cluster_size 10 --level 1 --rm_trans 1 --sort_by_len True --trim_ends True --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.85 --sp_oh 400 --ctg_asm rb --max_het_snps 1 --min_allele_cov 6 --n_final_polish 2 --polish_tool racon --rm_tmp False --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
 
 # real data, HG00733_chr6, hifi
 input=/root/capsule/data/real/hifi_HG00733/chr6.reads.fa.gz
