@@ -218,7 +218,7 @@ def get_superead(param):
 ################ For SuperReads Assembly #############
 ######################################################
 
-def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast=False):
+def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast):
     '''
     calculate the overlaps of supereads
     '''
@@ -314,7 +314,7 @@ def assemble_supereads(fasta, outdir, threads, min_read_len, min_ovlp_len, min_i
     elif method == 'naive':
         fasta2 = outdir + '/supereads.renamed.fa'
         rename_fa(fasta, fasta2, outdir, min_read_len)
-        paf = cal_supereads_overlap(fasta2, outdir, threads, min_ovlp_len, min_identity, o, r)
+        paf = cal_supereads_overlap(fasta2, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast)
     else:
         raise Exception('Warning: check the method for contig assembly.')
 
