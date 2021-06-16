@@ -96,6 +96,9 @@ def main():
 
     parser.add_argument('--ctg_asm', dest='ctg_asm', type=str, required=False, default='rb',
                         help="method to assemble super reads: [rb/naive/iter], rb is recommended")
+                        
+    parser.add_argument('--super_ovlp_fast', dest='super_ovlp_fast', type=ast.literal_eval, required=False, default=False,
+                        help="compute super read overlaps using fast mode or not, should be either True or False")
 
     parser.add_argument('--correct_mode', dest='correct_mode', type=str, required=False, default='hybrid',
                         help="method to correct raw reads: [msa/hybrid], msa is much faster than hybrid, which is recommended for large genomes")
@@ -334,7 +337,7 @@ def main():
                                                          args.sp_min_identity, args.sp_oh, args.sp_ohratio,
                                                          args.max_tip_len, args.ctg_asm,
                                                          args.max_het_snps, args.min_allele_cov, args.platform,
-                                                         args.rm_tmp)
+                                                         args.rm_tmp, args.super_ovlp_fast)
 
         if args.n_final_polish > 0:
             log.logger.info('Polishing final contigs for {} times...'.format(args.n_final_polish))
