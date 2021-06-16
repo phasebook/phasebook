@@ -218,7 +218,7 @@ def get_superead(param):
 ################ For SuperReads Assembly #############
 ######################################################
 
-def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast):
+def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast=False):
     '''
     calculate the overlaps of supereads
     '''
