@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e 
 
+
+echo "######### Install boost and zlib because failed to set up in the beginning #########"
+apt update
+
+echo -e "\n"|apt install libboost-all-dev #1.65
+
+echo -e "\n"|apt install zlib1g-dev # 1.2.11
+
+######### Install phasebook #########
+# sh install.sh #already installed
+
 ######### Run phasebook #########
 
 srcpath=/root/capsule/code/scripts
@@ -8,8 +19,12 @@ threads=16
 
 # simulated data, MHC pacbio hifi
 input=/root/capsule/data/simulated/pbsim/hifi/mhc/15x/PGF_COX.pbsim.hifi.15x.fasta.gz 
-python $srcpath/phasebook.py -i $input -o out --nsplit 1 -t $threads --min_cov 4 --min_identity 0.95 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 1000 --n_correct 0 --n_polish 1 --platform hifi --min_cluster_size 4 --level 8 --rm_trans 1 --sort_by_len False --trim_ends False --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.99 --sp_oh 10 --ctg_asm rb --max_het_snps 0 --min_allele_cov 4 --n_final_polish 1 --polish_tool racon --rm_tmp True --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
-
+out=/root/capsule/results/reproducibleTest4MHC_HiFi 
+echo "Running phasebook for reproducing MHC-HiFi results..."
+python $srcpath/phasebook.py -i $input -o $out --nsplit 1 -t $threads --min_cov 4 --min_identity 0.95 --min_read_len 1000 --min_sread_len 1000 --min_ovlp_len 1000 --n_correct 0 --n_polish 1 --platform hifi --min_cluster_size 4 --level 8 --rm_trans 1 --sort_by_len False --trim_ends False --rename False --sp_min_ovlplen 1000 --sp_min_identity 0.99 --sp_oh 10 --ctg_asm rb --max_het_snps 0 --min_allele_cov 4 --n_final_polish 1 --polish_tool racon --rm_tmp True --limited_times 100000000 --max_ovlps 100000000 --max_cluster_size 100000000
+echo
+echo "Finished running phasebook for reproducing MHC-HiFi"
+echo "Results are here: " $out 
 
 ## Note: the following code may cannot be run on 'Code Ocean' because of limited computational resources and storges ##
 ## For all datasets, we provide the final output haplotype-specific contigs and evaluations in 'result/' ##
@@ -48,19 +63,20 @@ fi
 ## real datasets ##
 # ls /root/capsule/result/*/*/*/work.sh
 
+echo 
 echo The output assemblies of simulated datasets are located here:
-ls /root/capsule/result/*/*/*/*/final_contigs.fa.gz
+ls /root/capsule/data/uploadedResults/*/*/*/final_contigs.fa.gz
 echo 
 echo the output assemblies of real datasets are located here:
-ls /root/capsule/result/*/*/*/final_contigs.fa.gz
+ls /root/capsule/data/uploadedResults/*/*/*/final_contigs.fa.gz
 echo 
 
 ######### Evaluation #########
-
+echo
 echo The evaluation from QUAST of simulated datasets are located here:
 # For 'WhatsHap & HapCut2', use /quast/contig_uniq/report.tsv 
-ls */*/*/*/quast/contig*/report.tsv
-
+ls /root/capsule/data/uploadedResults/*/*/*/*/quast/contig*/report.tsv
+echo 
 echo The evaluation from QUAST of real datasets are located here:
-ls*/*/*/quast/contig*/report.tsv
+ls /root/capsule/data/uploadedResults/*/*/*/quast/contig*/report.tsv
 

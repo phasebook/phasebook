@@ -218,24 +218,27 @@ def get_superead(param):
 ################ For SuperReads Assembly #############
 ######################################################
 
-def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r):
+def cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast):
     '''
     calculate the overlaps of supereads
     '''
     paf = outdir + '/supereads.tmp.paf'
     filtered_paf = outdir + '/supereads.paf'
-    # run minimap2, no cigar,step is much less computation cost.
-    # TODO: still use minimap2 to calculate overlaps??
+    if super_ovlp_fast:
+        os.system("minimap2 -x ava-ont --end-bonus 100 -t {} \
+                        {}  {} 2>/dev/null|awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}"
+                      .format(threads, fasta, fasta, min_ovlp_len, min_identity, filtered_paf)
+                      )
+    else:
+        filter_inline = 'python ' + sys.path[0] + '/filter_ovlp_inline.py {} {} {} {} '. \
+            format(min_ovlp_len, min_identity, o, r)
+        minimap = "minimap2 -cx ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 --end-bonus 100  " + \
+                "-t %s %s %s |cut -f 1-12| %s >%s" % (threads, fasta, fasta, filter_inline, paf)
 
-    filter_inline = 'python ' + sys.path[0] + '/filter_ovlp_inline.py {} {} {} {} '. \
-        format(min_ovlp_len, min_identity, o, r)
-    minimap = "minimap2 -cx ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -c --end-bonus 100  " + \
-              "-t %s %s %s |cut -f 1-12| %s >%s" % (threads, fasta, fasta, filter_inline, paf)
-
-    os.system(minimap)
-    #remove overlaps which are out of the max_ovlps limit
-    # rm_extra_ovlps(paf, filtered_paf,max_ovlps=50, rm_extra_ovlps=True)
-    rm_extra_ovlps(paf, filtered_paf,max_ovlps=10, rm_extra_ovlps=True) #TODO: max_ovlps = ?
+        os.system(minimap)
+        #remove overlaps which are out of the max_ovlps limit
+        # rm_extra_ovlps(paf, filtered_paf,max_ovlps=50, rm_extra_ovlps=True)
+        rm_extra_ovlps(paf, filtered_paf,max_ovlps=10, rm_extra_ovlps=True) #TODO: max_ovlps = ?
     if os.path.getsize(filtered_paf)==0:
         os.system('cp {} {}/../contigs.fa'.format(fasta, outdir))
         print('No satisfied overlap found between super reads, program finished.')
@@ -294,11 +297,11 @@ def identify_utg_paths(G):
 
 
 def assemble_supereads(fasta, outdir, threads, min_read_len, min_ovlp_len, min_identity, o, r,
-                       max_tip_len, method, max_het_snps, min_allele_cov, type, rm_tmp):
+                       max_tip_len, method, max_het_snps, min_allele_cov, type, rm_tmp, super_ovlp_fast):
     fasta2, paf = None, None
 
     if method == 'rb':
-        paf = cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r)
+        paf = cal_supereads_overlap(fasta, outdir, threads, min_ovlp_len, min_identity, o, r, super_ovlp_fast)
         paf = filter_ovlp_based_on_reads_parallel(paf, outdir, threads, max_het_snps, min_allele_cov, type)
 
         fasta2 = outdir + '/supereads.renamed.fa'

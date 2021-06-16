@@ -1,11 +1,15 @@
 import networkx as nx
 import sys
 import os 
+import gzip
 
 def fq_or_fa(file):
-    # with open(file) as fr:
-        # s = fr.readline()[0]
-    s = os.popen("less {}|head -1".format(file)).read()[0]
+    if file.endswith('.gz'):
+        fr = gzip.open(file,'rt')
+    else:
+        fr = open(file,'r')
+    s = fr.readline()[0]
+    # s = os.popen("less {}|head -1".format(file)).read()[0]
     mode = ''
     if s == '>':
         mode = 'fasta'
