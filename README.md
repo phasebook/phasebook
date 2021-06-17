@@ -10,7 +10,7 @@ aware super read overlap graph to extend super reads into haplotype aware contig
 
 
 ## Installation and dependencies
-Please note that phasebook is built for linux-based systems and python3 only.
+Please note that phasebook is built for linux-based systems only.
 phasebook relies on the following dependencies:
 - [whatshap](https://whatshap.readthedocs.io/en/latest/)
 - [minimap2](https://github.com/lh3/minimap2)
@@ -24,10 +24,11 @@ phasebook relies on the following dependencies:
 [MECAT2](https://github.com/xiaochuanle/MECAT2) 
 and [NECAT](https://github.com/xiaochuanle/NECAT)*
 - g++ >=5.5.0 and with boost libraries
+- python3
 
 To install phasebook, firstly, it is recommended to intall the dependencies through [Conda](https://docs.conda.io/en/latest/):
 ```
-conda create -n phasebook
+conda create -n phasebook python=3.7
 conda activate phasebook
 conda install -c bioconda whatshap=0.18 minimap2 longshot samtools bcftools racon fpa=0.5
 ```
