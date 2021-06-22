@@ -161,7 +161,6 @@ def compute_ovlp_hpc(fastx_i, fastx_j, outdir, threads, platform,genomesize, min
     prefix_j = fastx_j.split('/')[-1].replace('.fa', '')
     ovlp_file = "{}/2.overlap/{}_{}.paf".format(outdir, prefix_i, prefix_j)
     fw=open("compute_overlaps_hpc.sh","a")
-    os.abspath
     binpath="/prj/whatshap-denovo/software/miniconda3/bin/"
     if genomesize=='small':
         if platform == 'pb' :
