@@ -161,41 +161,42 @@ def compute_ovlp_hpc(fastx_i, fastx_j, outdir, threads, platform,genomesize, min
     prefix_j = fastx_j.split('/')[-1].replace('.fa', '')
     ovlp_file = "{}/2.overlap/{}_{}.paf".format(outdir, prefix_i, prefix_j)
     fw=open("compute_overlaps_hpc.sh","a")
+    binpath="/prj/whatshap-denovo/software/miniconda3/bin/"
     if genomesize=='small':
         if platform == 'pb' :
-            fw.write("minimap2 -cx ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{} \n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -cx ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{} \n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity, binpath,ovlp_file)
                       )
         elif platform == 'hifi': # for HiFi reads, it seems no need to use -c, which largely speeds up.
-            fw.write("minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}\n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{}\n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity, binpath,ovlp_file)
                       )
         elif platform == 'ont':# use cut -f 1-12 and then use fpa to prevent big RAM.
             print('ONT platform')
-            fw.write("minimap2 -cx ava-ont -k15 -Xw5 -m100 -g10000 -r2000 --max-chain-skip 25  -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}\n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -cx ava-ont -k15 -Xw5 -m100 -g10000 -r2000 --max-chain-skip 25  -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{}\n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity,binpath, ovlp_file)
                       )
         else:
             raise Exception('Unvalid sequencing platform, please set one of them: pb/hifi/ont')
     else:
         if platform == 'pb' :
-            fw.write("minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}\n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{}\n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity,binpath, ovlp_file)
                       )
         elif platform == 'hifi': # for HiFi reads, it seems no need to use -c, which largely speeds up.
-            fw.write("minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}\n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -x ava-pb -Hk19 -Xw5 -m100 -g10000 --max-chain-skip 25 -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{}\n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity, binpath,ovlp_file)
                       )
         elif platform == 'ont':
             print('ONT platform')
-            fw.write("minimap2 -x ava-ont -k15 -Xw5 -m100 -g10000 -r2000 --max-chain-skip 25  -t {} \
-                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |fpa drop -i -m  >{}\n"
-                      .format(threads, fastx_i, fastx_j, min_ovlp_len, min_identity, ovlp_file)
+            fw.write("{}minimap2 -x ava-ont -k15 -Xw5 -m100 -g10000 -r2000 --max-chain-skip 25  -t {} \
+                        {}  {} 2>/dev/null |cut -f 1-12 |awk '$11>={} && $10/$11 >={} ' |{}fpa drop -i -m  >{}\n"
+                      .format(binpath,threads, fastx_i, fastx_j, min_ovlp_len, min_identity, binpath,ovlp_file)
                       )
         else:
             raise Exception('Unvalid sequencing platform, please set one of them: pb/hifi/ont')
