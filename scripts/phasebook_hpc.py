@@ -96,7 +96,7 @@ def main():
 
     parser.add_argument('--ctg_asm', dest='ctg_asm', type=str, required=False, default='rb',
                         help="method to assemble super reads: [rb/naive/iter], rb is recommended")
-
+                        
     parser.add_argument('--super_ovlp_fast', dest='super_ovlp_fast', type=ast.literal_eval, required=False, default=False,
                         help="compute super read overlaps using fast mode or not, should be either True or False")
 
@@ -277,14 +277,20 @@ def main():
         log.logger.info('computing all-vs-all read overlaps...')
         os.system("rm -rf {}/2.overlap".format(args.outdir))
         os.system("mkdir -p {}/2.overlap".format(args.outdir))
-        ovlp_files = compute_ovlps(fastx_files, args.outdir, args.threads, args.platform, args.genomesize,
+        ovlp_files = compute_ovlps_hpc(fastx_files, args.outdir, args.threads, args.platform, args.genomesize,
                                    args.min_ovlp_len,
                                    args.min_identity, args.max_oh, args.oh_ratio)
 
+    #qsub
+    # compute_overlaps_hpc.sh
+
+    log.logger.info('test finished.\n')
+    sys.exit(0)
+
     log.logger.info('computing overlaps finished.\n')
-    # log.logger.info('sorting overlaps by overlap length and matched length...') 
+    # log.logger.info('sorting overlaps by overlap length and matched length...')
     # os.system("sort -k 11 -k 10 -nr -S {} --parallel {} {} -o {}".
-    #           format(args.max_memory, args.threads, ovlp_files[0], ovlp_files[0]))
+            #   format(args.max_memory, args.threads, ovlp_files[0], ovlp_files[0]))
 
     log.logger.info('clustering reads...')
     # clusters_file = cluster_reads(ovlp_files, args.outdir, args.sort_by_len, args.min_cluster_size, args.level)
