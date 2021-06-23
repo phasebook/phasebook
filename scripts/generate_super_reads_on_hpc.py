@@ -22,4 +22,7 @@ if __name__ == "__main__":
     else:
         rm_tmp=True
     get_superead([i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode])
-    print("{} cluster is finished.",file=outdir+"/generate_super_reads.log",flush=True)
+    logfile=outdir+"/../generate_super_reads.log"
+    fw=open(logfile,'a')
+    print("{} cluster is finished.",file=fw,flush=True)
+    fw.close()
