@@ -314,7 +314,7 @@ def main():
         fw= open('generate_super_reads_hpc.sh','w')
         for i in range(num_clusters):
             fw.write("python {}/generate_super_reads_on_hpc.py {} {} {} {} {} {} {} {} {} {} {} {} \n".
-            format(srcpath,i, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
+            format(srcpath,i+1, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
                      args.n_correct, args.n_polish, args.rm_trans, args.trim_ends, args.polish_tool, args.rm_tmp,
                      args.correct_mode))
         sys.exit(0)
