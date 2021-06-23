@@ -126,6 +126,10 @@ def main():
                         help="max number of overlaps for read")
     parser.add_argument('--max_cluster_size', dest='max_cluster_size', type=int, required=False, default=100000,
                         help="max cluster size")
+
+    parser.add_argument('--stage', dest='stage', type=int, required=False, default=1,
+                        help="the stage to run")
+
     parser.add_argument('--version', '-v', action='version', version='%(prog)s version: 1.0.0', help='show the version')
 
     args = parser.parse_args()
@@ -257,60 +261,59 @@ def main():
             raise Exception('invalid setting for --platform')
     else:
         pass
+    
+    if args.stage==1: #compute read overlaps
+        log.logger.info('splitting input fastx file into {} subfiles...'.format(args.nsplit))
+        os.system("rm -rf {}/1.split_fastx".format(args.outdir))
+        os.system("mkdir -p {}/1.split_fastx".format(args.outdir))
+        # fastx_files = []
+        # fastx_files.append(args.infile)
+        fastx_files = preprocess_fastx(args.infile, args.outdir, args.nsplit, qc=args.qc,
+                                    rename=args.rename)
 
-    log.logger.info('splitting input fastx file into {} subfiles...'.format(args.nsplit))
-    os.system("rm -rf {}/1.split_fastx".format(args.outdir))
-    os.system("mkdir -p {}/1.split_fastx".format(args.outdir))
-    # fastx_files = []
-    # fastx_files.append(args.infile)
-    fastx_files = preprocess_fastx(args.infile, args.outdir, args.nsplit, qc=args.qc,
-                                   rename=args.rename)
+        log.logger.info('splitting finished.\n')
 
-    log.logger.info('splitting finished.\n')
-
-    ovlp_files = []
-    if args.overlaps:
-        # use the input overlaps
-        ovlp_files.append(args.overlaps)
-    else:
-        # compute overlaps using minimap2(no base level alignment) and filter overlaps using fpa
-        log.logger.info('computing all-vs-all read overlaps...')
-        os.system("rm -rf {}/2.overlap".format(args.outdir))
-        os.system("mkdir -p {}/2.overlap".format(args.outdir))
-        ovlp_files = compute_ovlps_hpc(fastx_files, args.outdir, args.threads, args.platform, args.genomesize,
-                                   args.min_ovlp_len,
-                                   args.min_identity, args.max_oh, args.oh_ratio)
+        ovlp_files = []
+        if args.overlaps:
+            # use the input overlaps
+            ovlp_files.append(args.overlaps)
+        else:
+            # compute overlaps using minimap2(no base level alignment) and filter overlaps using fpa
+            log.logger.info('computing all-vs-all read overlaps...')
+            os.system("rm -rf {}/2.overlap".format(args.outdir))
+            os.system("mkdir -p {}/2.overlap".format(args.outdir))
+            ovlp_files = compute_ovlps_hpc(fastx_files, args.outdir, args.threads, args.platform, args.genomesize,
+                                    args.min_ovlp_len,
+                                    args.min_identity, args.max_oh, args.oh_ratio)
+        sys.exit(0)
 
     #qsub
     # compute_overlaps_hpc.sh
-
-    log.logger.info('test finished.\n')
-    # sys.exit(0)
-
     log.logger.info('computing overlaps finished.\n')
-    # log.logger.info('sorting overlaps by overlap length and matched length...')
-    # os.system("sort -k 11 -k 10 -nr -S {} --parallel {} {} -o {}".
-            #   format(args.max_memory, args.threads, ovlp_files[0], ovlp_files[0]))
 
-    log.logger.info('clustering reads...')
-    # clusters_file = cluster_reads(ovlp_files, args.outdir, args.sort_by_len, args.min_cluster_size, args.level)
+    if args.stage==2: 
 
-    clusters_file = limitedClusterReads(ovlp_files, args.outdir, args.sort_by_len, args.min_sread_len,
-                                        args.min_cluster_size, args.level,
-                                        args.limited_times, args.max_ovlps, args.max_cluster_size)
+        log.logger.info('clustering reads...')
+        # clusters_file = cluster_reads(ovlp_files, args.outdir, args.sort_by_len, args.min_cluster_size, args.level)
+        fastx_files= os.popen("ls {}/1.split_fastx/*".format(args.outdir)).read().strip().split('\n')
+        ovlp_files=os.popen("ls {}/2.overlap/*".format(args.outdir)).read().strip().split('\n')
+        clusters_file = limitedClusterReads(ovlp_files, args.outdir, args.sort_by_len, args.min_sread_len,
+                                            args.min_cluster_size, args.level,
+                                            args.limited_times, args.max_ovlps, args.max_cluster_size)
 
-    # clusters_file = args.outdir + '/clustered_reads.list'
+        # clusters_file = args.outdir + '/clustered_reads.list'
 
-    log.logger.info('generating read and overlap files for each cluster...')
-    cluster_dir = "{}/3.cluster".format(args.outdir)
-    os.system('rm -rf {}'.format(cluster_dir))
-    os.mkdir(cluster_dir)
-    num_clusters = split_infiles_by_cluster(fastx_files, ovlp_files, clusters_file, cluster_dir, args.threads)
+        log.logger.info('generating read and overlap files for each cluster...')
+        cluster_dir = "{}/3.cluster".format(args.outdir)
+        os.system('rm -rf {}'.format(cluster_dir))
+        os.mkdir(cluster_dir)
+        num_clusters = split_infiles_by_cluster(fastx_files, ovlp_files, clusters_file, cluster_dir, args.threads)
 
     # if args.rm_tmp:
     #     os.system("rm -rf {}/1.split_fastx/*".format(args.outdir))
     #     os.system("rm -rf {}/2.overlap/*".format(args.outdir))
-
+    sys.exit(0)
+    
     log.logger.info('stage1 assembly: assemble raw reads for each cluster...')
     if args.run_mode == 'local':
         run_on_local(num_clusters, args.threads, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
