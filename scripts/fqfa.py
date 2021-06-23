@@ -66,6 +66,22 @@ def fa2fq_low_memory(fa,fq):
     fw.close()
     return n_reads
 
+
+def fq2fa_low_memory(fq,fa):
+    out=[]
+    fw=open(fa,'w')
+    with open(fq,'r') as fr:
+        c=0
+        for line in fr:
+            c+=1
+            if (c%4) == 1:
+                out.append('>' + line[1:])
+            elif (c%4) == 2:
+                out.append(line)
+                fw.write(''.join(out))
+                out=[]
+    return
+
 def main():
 
     if len(sys.argv) < 4:
@@ -79,8 +95,7 @@ def main():
 
     if mode =='fq2fa':
         if low_memory:
-            pass
-            # fa2fq_low_memory(infile,outfile) #TODO
+            fq2fa_low_memory(infile,outfile) 
         else:
             fq2fa(infile,outfile)
     elif mode== 'fa2fq':
