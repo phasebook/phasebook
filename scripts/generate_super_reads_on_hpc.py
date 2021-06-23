@@ -8,7 +8,7 @@ from assembly import get_superead
 if __name__ == "__main__":
     i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode=sys.argv[1:]
     i = int(i)
-    min_cov=int(min_cov)
+    min_cov=float(min_cov)
     max_tip_len=int(max_tip_len)
     n_correct=int(n_correct)
     n_polish=int(n_polish)
