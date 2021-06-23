@@ -309,79 +309,85 @@ def main():
         os.mkdir(cluster_dir)
         num_clusters = split_infiles_by_cluster(fastx_files, ovlp_files, clusters_file, cluster_dir, args.threads)
 
-    # if args.rm_tmp:
+        srcpath=os.path.split(os.path.realpath(__file__))[0]
+        fw= open('generate_super_reads_hpc.sh','w')
+        for i in range(num_clusters):
+            fw.write("python {}/generate_super_reads_on_hpc.py ".format(srcpath,i, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
+                     args.n_correct, args.n_polish, args.rm_trans, args.trim_ends, args.polish_tool, args.rm_tmp,
+                     args.correct_mode))
+        sys.exit(0)
     #     os.system("rm -rf {}/1.split_fastx/*".format(args.outdir))
     #     os.system("rm -rf {}/2.overlap/*".format(args.outdir))
-    sys.exit(0)
-    
-    log.logger.info('stage1 assembly: assemble raw reads for each cluster...')
-    if args.run_mode == 'local':
-        run_on_local(num_clusters, args.threads, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
-                     args.n_correct, args.n_polish, args.rm_trans, args.trim_ends, args.polish_tool, args.rm_tmp,
-                     args.correct_mode)
-    elif args.run_mode == 'hpc':
-        run_on_hpc()
-    else:
-        raise ArgumentParser("invalid running mode, must be: local or hpc", args.run_mode)
 
-    log.logger.info('concatenate super reads sequences for all clusters...')
-    all_supereads_fa = "{}/all.supereads.fa".format(args.outdir)
-    os.system("for i in {}/3.cluster/c*/*.supereads.fa;do cat $i ;done >{}".
-              format(args.outdir, all_supereads_fa))
+    # log.logger.info('stage1 assembly: assemble raw reads for each cluster...')
+    # if args.run_mode == 'local':
+    #     run_on_local(num_clusters, args.threads, cluster_dir, args.platform, args.min_cov, args.max_tip_len,
+    #                  args.n_correct, args.n_polish, args.rm_trans, args.trim_ends, args.polish_tool, args.rm_tmp,
+    #                  args.correct_mode)
+    # elif args.run_mode == 'hpc':
+    #     run_on_hpc()
+    # else:
+    #     raise ArgumentParser("invalid running mode, must be: local or hpc", args.run_mode)
 
-    log.logger.info('stage1 assembly has been finished.')
+    if args.stage==3: 
+        log.logger.info('concatenate super reads sequences for all clusters...')
+        all_supereads_fa = "{}/all.supereads.fa".format(args.outdir)
+        os.system("for i in {}/3.cluster/c*/*.supereads.fa;do cat $i ;done >{}".
+                format(args.outdir, all_supereads_fa))
 
-    # do super reads assembly
-    if args.ctg_asm == 'iter':  # assemble super reads iteratively
-        log.logger.info('Using {} method for super reads assembly...'.format(args.ctg_asm))
-        # assemble_supereads_iter()#TODO
+        log.logger.info('stage1 assembly has been finished.')
 
-    elif args.ctg_asm == 'rb' or args.ctg_asm == 'naive':
-        log.logger.info('Using {} method for super reads assembly...'.format(args.ctg_asm))
-        asm_supereads_dir = "{}/4.asm_supereads".format(args.outdir)
-        os.system("rm -rf {}".format(asm_supereads_dir))
-        os.system("mkdir -p {}".format(asm_supereads_dir))
-        ctg_file, utg2supereads_old = assemble_supereads(all_supereads_fa, asm_supereads_dir, args.threads,
-                                                         args.min_read_len, args.sp_min_ovlplen,
-                                                         args.sp_min_identity, args.sp_oh, args.sp_ohratio,
-                                                         args.max_tip_len, args.ctg_asm,
-                                                         args.max_het_snps, args.min_allele_cov, args.platform,
-                                                         args.rm_tmp, args.super_ovlp_fast)
+        # do super reads assembly
+        if args.ctg_asm == 'iter':  # assemble super reads iteratively
+            log.logger.info('Using {} method for super reads assembly...'.format(args.ctg_asm))
+            # assemble_supereads_iter()#TODO
 
-        if args.n_final_polish > 0:
-            log.logger.info('Polishing final contigs for {} times...'.format(args.n_final_polish))
-            polish_dir = "{}/5.polish".format(args.outdir)
-            os.system("rm -rf {}".format(polish_dir))
-            os.system("mkdir -p {}".format(polish_dir))
+        elif args.ctg_asm == 'rb' or args.ctg_asm == 'naive':
+            log.logger.info('Using {} method for super reads assembly...'.format(args.ctg_asm))
+            asm_supereads_dir = "{}/4.asm_supereads".format(args.outdir)
+            os.system("rm -rf {}".format(asm_supereads_dir))
+            os.system("mkdir -p {}".format(asm_supereads_dir))
+            ctg_file, utg2supereads_old = assemble_supereads(all_supereads_fa, asm_supereads_dir, args.threads,
+                                                            args.min_read_len, args.sp_min_ovlplen,
+                                                            args.sp_min_identity, args.sp_oh, args.sp_ohratio,
+                                                            args.max_tip_len, args.ctg_asm,
+                                                            args.max_het_snps, args.min_allele_cov, args.platform,
+                                                            args.rm_tmp, args.super_ovlp_fast)
 
-            # rename
-            utg2supereads = {}
-            new2raw = {}
-            with open(args.outdir + '/4.asm_supereads/reads.id_map') as fid:
-                for line in fid:
-                    rawid, newid = line.strip().split()
-                    new2raw[newid] = rawid
-            for utg, new_ids in utg2supereads_old.items():
-                utg2supereads[utg] = ' '.join([new2raw[newid] for newid in new_ids])
+            if args.n_final_polish > 0:
+                log.logger.info('Polishing final contigs for {} times...'.format(args.n_final_polish))
+                polish_dir = "{}/5.polish".format(args.outdir)
+                os.system("rm -rf {}".format(polish_dir))
+                os.system("mkdir -p {}".format(polish_dir))
 
-            with open(polish_dir + '/utg2supereads.json', 'w') as fjson:
-                json.dump(utg2supereads, fjson)
+                # rename
+                utg2supereads = {}
+                new2raw = {}
+                with open(args.outdir + '/4.asm_supereads/reads.id_map') as fid:
+                    for line in fid:
+                        rawid, newid = line.strip().split()
+                        new2raw[newid] = rawid
+                for utg, new_ids in utg2supereads_old.items():
+                    utg2supereads[utg] = ' '.join([new2raw[newid] for newid in new_ids])
 
-            final_polish_parallel(ctg_file, utg2supereads, args.polish_tool, args.n_final_polish, polish_dir,
-                                  args.platform,
-                                  args.threads, args.min_ovlp_len, args.min_identity)
-    else:
-        raise ArgumentParser('invalid method for super reads assembly, must be: rb/naive/iter', args.ctg_asm)
+                with open(polish_dir + '/utg2supereads.json', 'w') as fjson:
+                    json.dump(utg2supereads, fjson)
 
-    os.system('mv {}/5.polish/final_contigs.polished.fa {}/contigs.fa'.format(args.outdir, args.outdir))
+                final_polish_parallel(ctg_file, utg2supereads, args.polish_tool, args.n_final_polish, polish_dir,
+                                    args.platform,
+                                    args.threads, args.min_ovlp_len, args.min_identity)
+        else:
+            raise ArgumentParser('invalid method for super reads assembly, must be: rb/naive/iter', args.ctg_asm)
 
-    if args.rm_tmp:
-        os.system("rm -rf {}/3.cluster/*".format(args.outdir))
-        os.system("rm -rf {}/5.polish/*".format(args.outdir))
+        os.system('mv {}/5.polish/final_contigs.polished.fa {}/contigs.fa'.format(args.outdir, args.outdir))
 
-    log.logger.info('All has been finished successfully.\n')
-    log.logger.info('The final output haplotype aware contigs are here: {}/contigs.fa\n'.format(args.outdir))
-    log.logger.info('Thank you for using phasebook!\n')
+        if args.rm_tmp:
+            os.system("rm -rf {}/3.cluster/*".format(args.outdir))
+            os.system("rm -rf {}/5.polish/*".format(args.outdir))
+
+        log.logger.info('All has been finished successfully.\n')
+        log.logger.info('The final output haplotype aware contigs are here: {}/contigs.fa\n'.format(args.outdir))
+        log.logger.info('Thank you for using phasebook!\n')
 
 
 if __name__ == '__main__':
