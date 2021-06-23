@@ -21,5 +21,5 @@ if __name__ == "__main__":
         rm_tmp=False
     else:
         rm_tmp=True
-    get_superead(i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode)
+    get_superead([i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode])
     print("{} cluster is finished.",file=outdir+"/generate_super_reads.log",flush=True)
