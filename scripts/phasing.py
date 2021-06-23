@@ -2,20 +2,20 @@ import os
 import re
 
 
-def get_bam(i, ref, fasta, outdir, type):
+def get_bam(i, ref, fasta, outdir, type,binpath=""):
     prefix = str(i)
     bam = outdir + '/' + prefix + ".bam"
     # TODO: is cigar necessary?
     if type == 'pb' or type == 'ont':
-        os.system("minimap2 -ax map-" + type + " -t 1 --secondary=no " + ref + " " + fasta + \
-                  " 2>/dev/null |samtools view -hS -F 2048 - |samtools sort -@ 1 - >" + bam)
+        os.system(binpath+"minimap2 -ax map-" + type + " -t 1 --secondary=no " + ref + " " + fasta + \
+                  " 2>/dev/null |"+binpath+"samtools view -hS -F 2048 - |"+binpath+"samtools sort -@ 1 - >" + bam)
     elif type == 'hifi':
-        os.system("minimap2 -ax asm20 -t 1 --secondary=no " + ref + " " + fasta + \
-                  " 2>/dev/null|samtools view -hS -F 2048 - |samtools sort -@ 1 - >" + bam)
+        os.system(binpath+"minimap2 -ax asm20 -t 1 --secondary=no " + ref + " " + fasta + \
+                  " 2>/dev/null|"+binpath+"samtools view -hS -F 2048 - |"+binpath+"samtools sort -@ 1 - >" + bam)
     return bam
 
 
-def call_variant(i, bam, ref, outdir, caller="longshot"):
+def call_variant(i, bam, ref, outdir, caller="longshot",binpath=""):
     '''
     iteration1:call variant using longshot which is applicable only for long reads
     subsequent iterations: use bcftools(--skip-indels because of low speed)
@@ -26,24 +26,24 @@ def call_variant(i, bam, ref, outdir, caller="longshot"):
     logfile = "{}/{}.log".format(outdir, i)
     if caller == "longshot":
         # build index
-        os.system("samtools index {}".format(bam))
-        os.system("samtools faidx {}".format(ref))
-        longshot_cmd = "longshot --bam {} --ref {} -n -F --out {} >{} 2>&1". \
-            format(bam, ref, vcf, logfile)
+        os.system("{}samtools index {}".format(binpath,bam))
+        os.system("{}samtools faidx {}".format(binpath,ref))
+        longshot_cmd = "{}longshot --bam {} --ref {} -n -F --out {} >{} 2>&1". \
+            format(binpath,bam, ref, vcf, logfile)
         # print(longshot_cmd)
         os.system(longshot_cmd)
     elif caller == "bcftools":
-        os.system("samtools index {}".format(bam))
-        os.system("samtools faidx {}".format(ref))
-        cmd = "bcftools mpileup --skip-indels -f {} {} |bcftools call -mv -Ov -o {}". \
-            format(ref, bam, vcf)
+        os.system("{}samtools index {}".format(binpath,bam))
+        os.system("{}samtools faidx {}".format(binpath,ref))
+        cmd = "{}bcftools mpileup --skip-indels -f {} {} |{}bcftools call -mv -Ov -o {}". \
+            format(binpath,ref, bam,binpath, vcf)
         os.system(cmd)
     else:
         raise Exception("Invalid caller, should be longshot or bcftools.")
     return vcf
 
 
-def phase_reads(i, vcf, bam, ref, outdir, add_unphased=True):
+def phase_reads(i, vcf, bam, ref, outdir, add_unphased=True,binpath=""):
     '''
     phase reads using whatshap which is much faster than longshot(built in Hapcut2)
     at the sacrifice of accuracy.
@@ -54,18 +54,18 @@ def phase_reads(i, vcf, bam, ref, outdir, add_unphased=True):
     if os.path.getsize(vcf) == 0:
         print("cannot phase reads in this super read: c{} because of no variant".format(i),
               file=log_file)
-        reads = os.popen("samtools view {}|cut -f 1".format(bam)).read().strip().split('\n')
+        reads = os.popen("{}samtools view {}|cut -f 1".format(binpath,bam)).read().strip().split('\n')
         hap2reads['hapUnknown'] = reads
         return hap2reads
 
     phased_vcf = outdir + '/{}.phased.vcf'.format(i)
-    if os.system("whatshap phase -o {} --reference {} --ignore-read-groups {} {} >/dev/null 2>&1".format(phased_vcf, ref, vcf, bam)):
+    if os.system("{}whatshap phase -o {} --reference {} --ignore-read-groups {} {} >/dev/null 2>&1".format(binpath,phased_vcf, ref, vcf, bam)):
         print('ERROR: whatshap failed...', file=log_file)
         return
-    os.system("bgzip -f {} >/dev/null 2>&1".format(phased_vcf))
-    os.system("tabix -p vcf -f {}.gz >/dev/null 2>&1".format(phased_vcf))
-    phase_cmd = "whatshap haplotag --reference {} --ignore-read-groups {}.gz {} 2>/dev/null| samtools view -|cut -f 1,12- ". \
-        format(ref, phased_vcf, bam)
+    os.system("{}bgzip -f {} >/dev/null 2>&1".format(binpath,phased_vcf))
+    os.system("{}tabix -p vcf -f {}.gz >/dev/null 2>&1".format(binpath,phased_vcf))
+    phase_cmd = "{}whatshap haplotag --reference {} --ignore-read-groups {}.gz {} 2>/dev/null| {}samtools view -|cut -f 1,12- ". \
+        format(binpath,ref, phased_vcf, bam,binpath)
     phased_info = os.popen(phase_cmd).read().strip()
     # print('phase cmd:{}'.format(phase_cmd))
     # print("phased_info:{}".format(phased_info))

@@ -122,7 +122,7 @@ def get_superead(param):
     '''
     get the super reads for a cluster
     '''
-    [i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends, polish_tool, rm_tmp,correct_mode] = param
+    [i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends, polish_tool, rm_tmp,correct_mode, binpath] = param
     i = str(i)
     outdir = outdir + '/c' + i
 
@@ -144,14 +144,14 @@ def get_superead(param):
                      polish_tool=polish_tool)  # TODO: necessary when HiFi ??
 
     # get bam
-    bam = get_bam(i, ref, fasta, outdir, type)
+    bam = get_bam(i, ref, fasta, outdir, type,binpath)
 
     # get vcf
     clog.logger.info("cluster:{} variant calling started...".format(i))
-    vcf = call_variant(i, bam, ref, outdir, caller="longshot")
+    vcf = call_variant(i, bam, ref, outdir, "longshot",binpath)
 
     clog.logger.info("cluster:{} reads phasing started...".format(i))
-    hap2reads = phase_reads(i, vcf, bam, ref, outdir, add_unphased=True)
+    hap2reads = phase_reads(i, vcf, bam, ref, outdir, True,binpath)
 
     read2seq = get_read2seq(fasta, mode='fasta')
     ovlp2record = read_paf(paf)

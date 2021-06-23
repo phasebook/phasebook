@@ -6,11 +6,11 @@ from assembly import get_superead
 
 
 def run_on_local(num_clusters, threads, outdir, type, min_cov, max_tip_len, n_correct, n_polish,
-                 rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode):
+                 rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode,binpath=""):
     params = []
     for j in range(num_clusters):
         i = str(j + 1)
-        param = [i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode]
+        param = [i, outdir, type, min_cov, max_tip_len, n_correct, n_polish, rm_trans, trim_ends,polish_tool,rm_tmp,correct_mode,binpath]
         params.append(param)
 
     pool = Pool(threads)
