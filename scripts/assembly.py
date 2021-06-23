@@ -101,14 +101,14 @@ def longest_path(G):
     return path
 
 
-def assemble_raw_reads(id, fasta, paf, outdir, max_tip_len, rm_trans):
+def assemble_raw_reads(id, fasta, paf, outdir, max_tip_len, rm_trans,binpath=""):
     # rename reads id, but this is not necessary when debug finished
     fasta2 = outdir + '/' + str(id) + '.renamed.fa'
     paf2 = outdir + '/' + str(id) + '.renamed.paf'
     id_map_file = rename_fa(fasta, fasta2, outdir)
     rename_paf(paf, paf2, id_map_file)
     digraph_file = ovlp2graph(fasta2, paf2, rm_trans, threads=1, remove_inclusions='false', rm_tips='true',
-                              min_read_len=0, max_tip_len=max_tip_len)
+                              min_read_len=0, max_tip_len=max_tip_len,binpath=binpath)
     ovlp2record = read_paf(paf2)
     read2seq = get_read2seq(fasta2, 'fasta')
     G = construct_digraph(digraph_file)
@@ -137,7 +137,7 @@ def get_superead(param):
         return
 
     # get ad-hoc reference for calling variants
-    ref = assemble_raw_reads(i, fasta, paf, outdir, max_tip_len, rm_trans)
+    ref = assemble_raw_reads(i, fasta, paf, outdir, max_tip_len, rm_trans,binpath)
 
     # polish ad-hoc reference, which can improve phasing performance
     ref = polish_seq(i, ref, fasta, outdir, rounds=1, type=type,
@@ -184,7 +184,7 @@ def get_superead(param):
                 clog.logger.warning("{} does not exist or is empty, skipping super read: c_{}_{}".format(paf, i, hap))
                 continue
 
-            hap_ref = assemble_raw_reads(i, hap_fasta, hap_paf, hap_outdir, max_tip_len, rm_trans)
+            hap_ref = assemble_raw_reads(i, hap_fasta, hap_paf, hap_outdir, max_tip_len, rm_trans,binpath)
 
             # use raw reads to polish for one time, which to avoid possible bugs(large indel) caused by consent
             # when self correcting reads for multiple times.
@@ -319,7 +319,7 @@ def assemble_supereads(fasta, outdir, threads, min_read_len, min_ovlp_len, min_i
         raise Exception('Warning: check the method for contig assembly.')
 
     digraph_file = ovlp2graph(fasta2, paf, rm_trans=1, threads=threads, remove_inclusions='true', rm_tips='true',
-                              min_read_len=min_read_len, max_tip_len=max_tip_len)
+                              min_read_len=min_read_len, max_tip_len=max_tip_len,binpath="")
     ovlp2record = read_paf(paf)
     read2seq = get_read2seq(fasta2, 'fasta')
     G = construct_digraph(digraph_file)

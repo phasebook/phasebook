@@ -14,7 +14,7 @@ It is based on c++ code of Viralquasispecies executable program.
 
 
 def ovlp2graph(fasta, paf, rm_trans=0, threads=1, remove_inclusions='false', rm_tips='true', min_read_len=1000,
-               max_tip_len=1000):
+               max_tip_len=1000,binpath=""):
     # id in fasta and paf files must be numerical
     # Note: the read ID in fasta must be from 0 to N,and so are IDs in overlap file.
     # otherwise, ID will be converted automatically.
@@ -33,9 +33,9 @@ def ovlp2graph(fasta, paf, rm_trans=0, threads=1, remove_inclusions='false', rm_
     # overlap reformat
     sfo = outdir + '/overlaps.sfo'
     overlaps = outdir + '/overlaps.savage'
-    paf2sfo_cmd = 'python %s/minimap22sfo.py --in %s --out %s -m 0 -p 0' % (selfpath, paf, sfo)
-    sfo2overlaps_cmd = 'python %s/sfo2overlaps.py --in %s --out %s --num_singles %d  --num_pairs 0' \
-                       % (selfpath, sfo, overlaps, n_reads)
+    paf2sfo_cmd = '%spython %s/minimap22sfo.py --in %s --out %s -m 0 -p 0' % (binpath,selfpath, paf, sfo)
+    sfo2overlaps_cmd = '%spython %s/sfo2overlaps.py --in %s --out %s --num_singles %d  --num_pairs 0' \
+                       % (binpath,selfpath, sfo, overlaps, n_reads)
     subprocess.check_call(paf2sfo_cmd, shell=True)
     subprocess.check_call(sfo2overlaps_cmd, shell=True)
     # subprocess.check_call('rm -f %s' %sfo,shell=True)
