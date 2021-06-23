@@ -40,19 +40,54 @@ def fa2fq(fa,fq):
         fw.write(''.join(out))
     return n_reads
 
+
+def fa2fq_low_memory(fa,fq):
+    seq=''
+    out=[]
+    n_reads=0
+    fw=open(fq,'w')
+    with open(fa,'r') as fr:
+        for line in fr:
+            if line.startswith('>'):
+                n_reads+=1
+                if seq:
+                    score='I'*len(seq)
+                    out.append(seq+'\n+\n'+score+'\n')
+                    seq=''
+                    fw.write(''.join(out))
+                    out=[]
+                out.append('@'+line[1:])
+            else:
+                seq+=line.strip()
+    #the last one
+    score='I'*len(seq)
+    out.append(seq+'\n+\n'+score+'\n')
+    fw.write(''.join(out))
+    fw.close()
+    return n_reads
+
 def main():
 
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 4:
         print('ERROR: please check input parameters.')
         return 1
-          
-    infile = sys.argv[1]
-    outfile = sys.argv[2]
-    mode=sys.argv[3]
+
+    infile,outfile,mode = sys.argv[1:4]
+    low_memory = False
+    if len(sys.argv) == 5:
+        low_memory=sys.argv[4]
+
     if mode =='fq2fa':
-        fq2fa(infile,outfile)
+        if low_memory:
+            pass
+            # fa2fq_low_memory(infile,outfile) #TODO
+        else:
+            fq2fa(infile,outfile)
     elif mode== 'fa2fq':
-        fa2fq(infile,outfile)
+        if low_memory:
+            fa2fq_low_memory(infile,outfile)
+        else:
+            fa2fq(infile,outfile)
     else:
         print('mode error')
         return 1

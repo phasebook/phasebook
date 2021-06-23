@@ -285,7 +285,7 @@ def main():
     # compute_overlaps_hpc.sh
 
     log.logger.info('test finished.\n')
-    sys.exit(0)
+    # sys.exit(0)
 
     log.logger.info('computing overlaps finished.\n')
     # log.logger.info('sorting overlaps by overlap length and matched length...')
