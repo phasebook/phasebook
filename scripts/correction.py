@@ -101,7 +101,7 @@ def correct_error_reads(id, outdir, rounds=1, type="pb",correct_mode='msa'):
         os.chdir(base_dir)
     return corrected_fa
 
-def polish_seq(i, ref, reads_fa, outdir, rounds, type, polish_tool):
+def polish_seq(i, ref, reads_fa, outdir, rounds, type, polish_tool,binpath=""):
     '''
     polish sequence using raw or corrected reads
     :param i: the i pivot read
@@ -119,13 +119,13 @@ def polish_seq(i, ref, reads_fa, outdir, rounds, type, polish_tool):
     if polish_tool == 'racon':
         for k in range(rounds):
             if type == 'pb' or type == 'ont':
-                os.system("minimap2 --secondary=no -x map-{} -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}"
-                          .format(type, tmp_fa, reads_fa, polish_paf))
+                os.system("{}minimap2 --secondary=no -x map-{} -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}"
+                          .format(binpath,type, tmp_fa, reads_fa, polish_paf))
             elif type == 'hifi':
-                os.system("minimap2 --secondary=no -x asm20  -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}".
-                          format(tmp_fa, reads_fa, polish_paf))
+                os.system("{}minimap2 --secondary=no -x asm20  -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}".
+                          format(binpath,tmp_fa, reads_fa, polish_paf))
             try:
-                os.system("racon  -t 1 {} {} {} >{} 2>{}".format(reads_fa, polish_paf, tmp_fa, polished_fa, logfile))
+                os.system("{}racon  -t 1 {} {} {} >{} 2>{}".format(binpath,reads_fa, polish_paf, tmp_fa, polished_fa, logfile))
             except RuntimeError as reason:
                 print("Error occurs when running Racon:\n" +
                       "The reason is {}\n".format(reason) +
@@ -142,11 +142,11 @@ def polish_seq(i, ref, reads_fa, outdir, rounds, type, polish_tool):
         flag = True
         for k in range(rounds):
             if type == 'pb' or type == 'ont':
-                os.system("minimap2 --secondary=no -ax map-{} -t {} {} {} 2>/dev/null|samtools view -Sb  - > {}".
-                          format(type, 1, tmp_fa, reads_fa, polish_bam))
+                os.system("{}minimap2 --secondary=no -ax map-{} -t {} {} {} 2>/dev/null|samtools view -Sb  - > {}".
+                          format(binpath,type, 1, tmp_fa, reads_fa, polish_bam))
             elif type == 'hifi':
-                os.system("minimap2 --secondary=no -ax asm20 -t {} {} {} 2>/dev/null|samtools view -Sb  - > {}".
-                          format(1, tmp_fa, reads_fa, polish_bam))
+                os.system("{}minimap2 --secondary=no -ax asm20 -t {} {} {} 2>/dev/null|samtools view -Sb  - > {}".
+                          format(binpath,1, tmp_fa, reads_fa, polish_bam))
 
             os.system("samtools sort -@{} -o {} {}".format(1, polish_sort_bam, polish_bam))
             os.system("samtools index {}".format(polish_sort_bam))
@@ -205,7 +205,7 @@ def get_posi_by_depth(lst, min_cov, w=20):
     return posi_list
 
 
-def scan_seq_by_depth(i, hap, err_consensus_fa, reads_fa, outdir, min_cov, type, trim_ends):
+def scan_seq_by_depth(i, hap, err_consensus_fa, reads_fa, outdir, min_cov, type, trim_ends,binpath=""):
     '''
     map reads back to the erroneous consensus,
     only trim bases with low coverage at both ends
@@ -215,11 +215,11 @@ def scan_seq_by_depth(i, hap, err_consensus_fa, reads_fa, outdir, min_cov, type,
     # compute coverage for each base, filter secondary and supplementary alignments at first
     bam = outdir + "/" + str(i) + ".polished.bam"
     if type == 'ont' or type == 'pb':
-        os.system("minimap2 -ax map-" + type + " --secondary=no -t 1 " + err_consensus_fa + " " + reads_fa + \
-                  "  2>/dev/null |samtools view -hS -F 2048 -|samtools sort -@ 1 - >" + bam)
+        os.system(binpath+"minimap2 -ax map-" + type + " --secondary=no -t 1 " + err_consensus_fa + " " + reads_fa + \
+                  "  2>/dev/null |"+binpath+"samtools view -hS -F 2048 -|"+binpath+"samtools sort -@ 1 - >" + bam)
     elif type == 'hifi':
-        os.system("minimap2 -ax asm20 --secondary=no -t 1 " + err_consensus_fa + " " + reads_fa + \
-                  "  2>/dev/null |samtools view -hS -F 2048 -|samtools sort -@ 1 - >" + bam)
+        os.system(binpath+"minimap2 -ax asm20 --secondary=no -t 1 " + err_consensus_fa + " " + reads_fa + \
+                  "  2>/dev/null |"+binpath+"samtools view -hS -F 2048 -|"+binpath+"samtools sort -@ 1 - >" + bam)
 
     # TODO need to consider the low coverage region in the middle of sequence
     # @@ check why many errors in the middle of some super reads:
@@ -244,11 +244,11 @@ def scan_seq_by_depth(i, hap, err_consensus_fa, reads_fa, outdir, min_cov, type,
         open(out_fa, 'w').close()  # new an empty file
         return
     else:
-        positions = os.popen("samtools depth " + bam + "|awk '{print NR, $0}'" + "|awk '$4>=" + str(min_cov) + \
+        positions = os.popen(binpath+"samtools depth " + bam + "|awk '{print NR, $0}'" + "|awk '$4>=" + str(min_cov) + \
                              "'|cut -f 1 -d ' '|sed -n '1p;$p'").read().strip()
         if positions:
             [a, b] = [int(x) for x in positions.split("\n")]  # line number
-            posi_cov_list = os.popen("samtools depth " + bam + "|cut -f 2,3").read().strip().split('\n')
+            posi_cov_list = os.popen(binpath+"samtools depth " + bam + "|cut -f 2,3").read().strip().split('\n')
             posi_list = get_posi_by_depth(posi_cov_list[(a - 1):b], min_cov, w=20)  # 1 based for sam
         else:
             print("{}.{}: no sequence satisfies the requirement of min coverage".format(i, hap),

@@ -141,7 +141,7 @@ def get_superead(param):
 
     # polish ad-hoc reference, which can improve phasing performance
     ref = polish_seq(i, ref, fasta, outdir, rounds=1, type=type,
-                     polish_tool=polish_tool)  # TODO: necessary when HiFi ??
+                     polish_tool=polish_tool,binpath=binpath)  # TODO: necessary when HiFi ??
 
     # get bam
     bam = get_bam(i, ref, fasta, outdir, type,binpath)
@@ -189,16 +189,16 @@ def get_superead(param):
             # use raw reads to polish for one time, which to avoid possible bugs(large indel) caused by consent
             # when self correcting reads for multiple times.
             if n_correct > 0:
-                hap_ref = polish_seq(i, hap_ref, hap_fasta, hap_outdir, rounds=1, type=type, polish_tool=polish_tool)
+                hap_ref = polish_seq(i, hap_ref, hap_fasta, hap_outdir, rounds=1, type=type, polish_tool=polish_tool,binpath=binpath)
                 corrected_fa = correct_error_reads(i, hap_outdir, rounds=n_correct, type=type,correct_mode=correct_mode)
                 polished_fa = polish_seq(i, hap_ref, corrected_fa, hap_outdir, rounds=n_polish, type=type,
-                                         polish_tool=polish_tool)
-                trimmed_fa = scan_seq_by_depth(i, hap, polished_fa, corrected_fa, hap_outdir, min_cov, type, trim_ends)
+                                         polish_tool=polish_tool,binpath=binpath)
+                trimmed_fa = scan_seq_by_depth(i, hap, polished_fa, corrected_fa, hap_outdir, min_cov, type, trim_ends,binpath)
             else:
                 polished_fa = polish_seq(i, hap_ref, hap_fasta, hap_outdir, rounds=n_polish, type=type,
-                                         polish_tool=polish_tool)
+                                         polish_tool=polish_tool,binpath=binpath)
                 # polished_fa = polish_seq(i, hap_ref, hap_fasta_raw, hap_outdir, rounds=n_polish, type=type)
-                trimmed_fa = scan_seq_by_depth(i, hap, polished_fa, hap_fasta, hap_outdir, min_cov, type, trim_ends)
+                trimmed_fa = scan_seq_by_depth(i, hap, polished_fa, hap_fasta, hap_outdir, min_cov, type, trim_ends,binpath)
                 os.system("ln -fs {}.fa {}/{}.corrected.fa".format(i,hap_outdir,i))
     clog.logger.info("cluster:{} super read construction finished.".format(i))
     clog.logger.info("cluster:{} super read files are:{}/{}.hap*.supereads.fa".format(i, outdir, i))
