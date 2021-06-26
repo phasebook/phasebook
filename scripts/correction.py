@@ -119,10 +119,10 @@ def polish_seq(i, ref, reads_fa, outdir, rounds, type, polish_tool,binpath=""):
     if polish_tool == 'racon':
         for k in range(rounds):
             if type == 'pb' or type == 'ont':
-                os.system("{}minimap2 --secondary=no -x map-{} -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}"
+                os.system("{}minimap2 --secondary=no -x map-{} -c -t 8 {} {} 2>/dev/null |cut -f 1-12 >{}"
                           .format(binpath,type, tmp_fa, reads_fa, polish_paf))
             elif type == 'hifi':
-                os.system("{}minimap2 --secondary=no -x asm20  -c -t 1 {} {} 2>/dev/null |cut -f 1-12 >{}".
+                os.system("{}minimap2 --secondary=no -x asm20  -c -t 8 {} {} 2>/dev/null |cut -f 1-12 >{}".
                           format(binpath,tmp_fa, reads_fa, polish_paf))
             try:
                 os.system("{}racon  -t 1 {} {} {} >{} 2>{}".format(binpath,reads_fa, polish_paf, tmp_fa, polished_fa, logfile))

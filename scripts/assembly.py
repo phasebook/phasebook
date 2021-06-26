@@ -194,6 +194,7 @@ def get_superead(param):
                 polished_fa = polish_seq(i, hap_ref, corrected_fa, hap_outdir, rounds=n_polish, type=type,
                                          polish_tool=polish_tool,binpath=binpath)
                 trimmed_fa = scan_seq_by_depth(i, hap, polished_fa, corrected_fa, hap_outdir, min_cov, type, trim_ends,binpath)
+                
             else:
                 polished_fa = polish_seq(i, hap_ref, hap_fasta, hap_outdir, rounds=n_polish, type=type,
                                          polish_tool=polish_tool,binpath=binpath)
