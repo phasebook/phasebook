@@ -44,10 +44,10 @@ def daccord(id, outdir, rounds=1, type="pb"):
     logfile = "{}/{}.log".format(outdir, id)
     selfpath = sys.path[0]
 
-    binpath="/prj/whatshap-denovo/software/miniconda3/bin/"
+    binpath="/prj/whatshap-denovo/software/miniconda3/bin"
 
     tmp_fa="{}/reads.fasta".format(outdir)
-    os.system("/seqkit fq2fa {} >{}".format(binpath,in_fa,tmp_fa))
+    os.system("{}/seqkit fq2fa {} >{}".format(binpath,in_fa,tmp_fa))
     for i in range(rounds):
         os.system("rm -f {}/reads.las* {}/reads.dam".format(outdir,outdir))
         out_fa = outdir + '/' + prefix + ".correct_" + str(i + 1) + ".fa"
