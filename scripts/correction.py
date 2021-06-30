@@ -47,7 +47,7 @@ def daccord(id, outdir, rounds=1, type="pb"):
     binpath="/prj/whatshap-denovo/software/miniconda3/bin"
 
     tmp_fa="{}/reads.fasta".format(outdir)
-    os.system("{}/seqkit fq2fa {} >{}".format(binpath,in_fa,tmp_fa))
+    os.system("{}/seqkit fq2fa {} >{}".format(binpath,in_fa,tmp_fa)) #daccord need wrapped fasta
     for i in range(rounds):
         os.system("rm -f {}/reads.las* {}/reads.dam".format(outdir,outdir))
         out_fa = outdir + '/' + prefix + ".correct_" + str(i + 1) + ".fa"
@@ -57,7 +57,7 @@ def daccord(id, outdir, rounds=1, type="pb"):
             binpath+'/HPC.daligner '+outdir+'/reads.dam|bash;'+ \
             '/prj/whatshap-denovo/software/daccord/bin/daccord '+outdir+'/reads.las '+outdir+'/reads.dam >'+out_fa + ' 2>/dev/null'
 
-        # print('Run error correction module command:\n{}'.format(cmd),file=open('/prj/phasebook/dataset/clr-athal/assembly/test/shit.log','a'))
+        # print('Run error correction module command:\n{}'.format(cmd),file=open('log','a'))
         try:
             os.system(cmd)
         except:
@@ -65,7 +65,7 @@ def daccord(id, outdir, rounds=1, type="pb"):
         os.system("mv {} {}".format(out_fa, tmp_fa))
 
     corrected_fa = outdir + '/' + prefix + ".corrected.fa"
-    os.system("mv {} {}".format(tmp_fa, corrected_fa))
+    os.system("{}/seqkit fq2fa -w 0 {} >{}".format(binpath,tmp_fa, corrected_fa))
     return corrected_fa
 
 
