@@ -55,7 +55,7 @@ def daccord(id, outdir, rounds=1, type="pb"):
         cmd=binpath+'/fasta2DAM '+outdir+'/reads.dam '+outdir+'/reads; '+ binpath+'/DBsplit -s256 -x1000 '+outdir+'/reads.dam;'
         + binpath+'/HPC.daligner '+outdir+'/reads.dam|bash;'+ '/prj/whatshap-denovo/software/daccord/bin/daccord '+outdir+'/reads.las '+outdir+'/reads.dam >'+outdir+'/'+out_fa 
 
-        print('Run error correction module command:\n{}'.format(cmd))
+        print('Run error correction module command:\n{}'.format(cmd),file=open(logfile,'a'))
         try:
             os.system(cmd)
         except:
