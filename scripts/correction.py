@@ -37,6 +37,36 @@ def consent(id, outdir, rounds=1, type="pb"):
     return corrected_fa
 
 
+def daccord(id, outdir, rounds=1, type="pb"):
+    prefix = str(id)
+    in_fa = outdir + '/' + prefix + ".fa"
+    out_fa = ''
+    logfile = "{}/{}.log".format(outdir, id)
+    selfpath = sys.path[0]
+
+    binpath="/prj/whatshap-denovo/software/miniconda3/bin/"
+
+    tmp_fa="{}/reads.fasta".format(outdir)
+    os.system("/seqkit fq2fa {} >{}".format(binpath,in_fa,tmp_fa))
+    for i in range(rounds):
+        os.system("rm -f {}/reads.las* {}/reads.dam".format(outdir,outdir))
+        out_fa = outdir + '/' + prefix + ".correct_" + str(i + 1) + ".fa"
+        
+        cmd=binpath+'/fasta2DAM '+outdir+'/reads.dam '+outdir+'/reads; '+ binpath+'/DBsplit -s256 -x1000 '+outdir+'/reads.dam;'
+        + binpath+'/HPC.daligner '+outdir+'/reads.dam|bash;'+ '/prj/whatshap-denovo/software/daccord/bin/daccord '+outdir+'/reads.las '+outdir+'/reads.dam >'+outdir+'/'+out_fa 
+
+        print('Run error correction module command:\n{}'.format(cmd))
+        try:
+            os.system(cmd)
+        except:
+            raise Exception('Error in running daccord, please check...')
+        os.system("mv {} {}".format(out_fa, tmp_fa))
+
+    corrected_fa = outdir + '/' + prefix + ".corrected.fa"
+    os.system("mv {} {}".format(tmp_fa, corrected_fa))
+    return corrected_fa
+
+
 def correct_error_reads(id, outdir, rounds=1, type="pb",correct_mode='msa'):
     '''
     correct sequencing error of raw reads using consent
@@ -48,6 +78,11 @@ def correct_error_reads(id, outdir, rounds=1, type="pb",correct_mode='msa'):
         except:
             raise Exception('Failed to perform hybrid error correction !!')
 
+    elif correct_mode=='dbg': #local De Bruijn graphs
+        try:
+            corrected_fa=daccord(id, outdir, rounds, type)
+        except:
+            raise Exception('Failed to perform dbg error correction !!')
     elif correct_mode=='msa':
         prefix = str(id)
         in_fa =  prefix + ".fa"

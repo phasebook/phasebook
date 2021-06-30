@@ -101,7 +101,7 @@ def main():
                         help="compute super read overlaps using fast mode or not, should be either True or False")
 
     parser.add_argument('--correct_mode', dest='correct_mode', type=str, required=False, default='hybrid',
-                        help="method to correct raw reads: [msa/hybrid], msa is much faster than hybrid, which is recommended for large genomes")
+                        help="method to correct raw reads: [dbg/msa/hybrid], msa is much faster than hybrid, which is recommended for large genomes")
 
     parser.add_argument('--max_het_snps', dest='max_het_snps', type=int, required=False, default=0,
                         help="maximum number of heterozygous SNPs to determine the contig overlap is from the identical haplotype or not")
