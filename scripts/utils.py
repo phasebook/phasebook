@@ -327,7 +327,7 @@ def split_infiles_by_cluster(fastx_files, ovlp_files, clusters_file, outdir, thr
                 if not read_item:
                     break
                 num_reads += 1
-                read = read_item[0][1:].strip()
+                read = read_item[0].strip().split()[0][1:]
                 if read in read2clusters:
                     for cluster_id in set(read2clusters[read].split()):
                         if cluster_id in cluster2fa:
