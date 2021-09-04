@@ -139,6 +139,8 @@ For large genomes or genomic regions assembly:
     python phasebook.py -i reads.fa -t 8 -p ont -g large -x 
 ```
 
+One could also run `phasebook` on HPC when handling with very large genomes, such as human genome. Please see the shell script `run_phasebook_on_hpc.sh` for the details.
+
 ## Possible issues during installation (optional)
 
 - If `g++` version of the system is not satisfied, one could try this to install:
