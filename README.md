@@ -30,7 +30,7 @@ To install phasebook, firstly, it is recommended to intall the dependencies thro
 ```
 conda create -n phasebook python=3.7
 conda activate phasebook
-conda install -c bioconda whatshap=0.18 minimap2 longshot samtools bcftools racon fpa=0.5
+conda install -c bioconda whatshap=0.18 minimap2=2.18 longshot=0.4.1 samtools=1.12 bcftools=1.12 racon=1.4.20 fpa=0.5
 ```
 
 Subsequently, pull down the code to the directory where you want to install, and compile the code:
