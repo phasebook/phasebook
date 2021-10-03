@@ -170,6 +170,7 @@ sh install.sh
 
 ## TODO
 - Make pair-wise information be trackable in the final output. 
+
 Currently, the output of phasebook is a bag of contigs from both haplotypes. For super-reads themselves, we do have kept the pair-wise information being tracked in the intermediate super-read file. But for the final output, we are working on this to make pair-wise information be trackable in the final assemblies as well. For example, compute a metric such as Jaccard index for each pair of final contig based on their common/unique super-reads(whether from the same haplotype or not) which contribute to both final contigs.
 
 ## Citation
