@@ -168,4 +168,7 @@ ln -s /path/to/miniconda3/envs/phasebook/lib/libz.* /path/to/miniconda3/envs/pha
 sh install.sh
 ```
 
+## TODO
+- Make pair-wise information be trackable in the final output. For example, compute a metric such as Jaccard index for each pair of final contig based on their common/unique super-reads(whether from the same haplotype or not) which contribute to both final contigs.
+
 ## Citation
