@@ -170,6 +170,8 @@ sh install.sh
 
 ## TODO
 - Make pair-wise information be trackable in the final output. 
-Currently, the output of phasebook is a bag of contigs from both haplotypes. For super-reads themselves, we do have kept the pair-wise information being tracked in the intermediate super-read file. But for the final output, we are working on this to make pair-wise information be trackable in the final assemblies as well. For example, compute a metric such as Jaccard index for each pair of final contig based on their common/unique super-reads(whether from the same haplotype or not) which contribute to both final contigs.
+Currently, the output of phasebook is a bag of contigs from both haplotypes. For super-reads themselves, we do have kept the pair-wise information being tracked in the intermediate super-read file. But for the final output, we are working on this to make pair-wise information be trackable in the final assemblies as well. 
+<!-- For example, compute a metric such as Jaccard index for each pair of final contig based on their common/unique super-reads(whether from the same haplotype or not) which contribute to both final contigs.-->
 
 ## Citation
+Luo, X., Kang, X. & Schönhuth, A. phasebook: haplotype-aware de novo assembly of diploid genomes from long reads. Genome Biol 22, 299 (2021). [Link](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02512-x)
