@@ -141,6 +141,16 @@ For large genomes or genomic regions assembly:
 
 One could also run `phasebook` on HPC when handling with very large genomes, such as human genome. Please see the shell script `run_phasebook_on_hpc.sh` for the details.
 
+Note that each read per line in `reads.fa`, wrapped FASTA format is not allowed:
+```
+>read1
+AACGGTACG
+>read2
+TATTAAGGC
+>read3
+AGGGCCGAATT
+```
+
 ## Possible issues during installation (optional)
 
 - If `g++` version of the system is not satisfied, one could try this to install:
