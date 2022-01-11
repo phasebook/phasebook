@@ -42,8 +42,18 @@ sh install.sh
 
 ## Running and options
 
-The input read file is only required and the format should be FASTA or FASTQ. Other parameters are optional.
-Please run `python phasebook.py -h` to get details of optional parameters setting. 
+The input read file is only required and the format should be FASTA or FASTQ. NOTE: each read per line in FASTA file, wrapped format is not allowed.
+Example:
+```
+>read1
+AACGGTACG
+>read2
+TATTAAGGC
+>read3
+AGGGCCGAATT
+```
+
+Other parameters are optional. Please run `python phasebook.py -h` to get details of optional parameters setting. 
 The final polished haplotype aware contigs are included in the `contigs.fa` file under output directory.
 
 Before running phasebook, please read through the following basic parameter settings, 
@@ -141,15 +151,6 @@ For large genomes or genomic regions assembly:
 
 One could also run `phasebook` on HPC when handling with very large genomes, such as human genome. Please see the shell script `run_phasebook_on_hpc.sh` for the details.
 
-Note that each read per line in `reads.fa`, wrapped FASTA format is not allowed:
-```
->read1
-AACGGTACG
->read2
-TATTAAGGC
->read3
-AGGGCCGAATT
-```
 
 ## Possible issues during installation (optional)
 
