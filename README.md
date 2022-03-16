@@ -158,8 +158,8 @@ One could also run `phasebook` on HPC when handling with very large genomes, suc
 ```
 conda install -c conda-forge gxx_linux-64=7.3.0
 # replace the /path/to/ with your own path
-ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda-cos6-linux-gnu-g++ /path/to/miniconda3/envs/phasebook/bin/g++
-ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda-cos6-linux-gnu-gcc /path/to/miniconda3/envs/phasebook/bin/gcc
+ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda_cos6-linux-gnu-g++ /path/to/miniconda3/envs/phasebook/bin/g++
+ln -s /path/to/miniconda3/envs/phasebook/bin/x86_64-conda_cos6-linux-gnu-gcc /path/to/miniconda3/envs/phasebook/bin/gcc
 ```
 - If `boost` or `zlib` library is not installed, one could try this to install:
 ```
